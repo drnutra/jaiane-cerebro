@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault curado - 06-WORKFLOWS/W2-CONTINUACAO-MAPA - Cerebro Jaiane</title>
+  <meta name="robots" content="index,follow">
+  <style>
+    body{font-family:Arial,sans-serif;max-width:840px;margin:32px auto;padding:0 18px;line-height:1.55;color:#151515;background:#fff}
+    h1{font-size:30px;margin:0 0 18px}
+    h2{font-size:22px;margin-top:28px}
+    h3{font-size:18px;margin-top:22px}
+    a{color:#0b57d0}
+    code{background:#f4f4f4;padding:2px 4px;border-radius:4px}
+    table{border-collapse:collapse;width:100%;margin:16px 0}
+    th,td{border:1px solid #ddd;padding:8px;text-align:left}
+    nav{border-bottom:1px solid #ddd;margin-bottom:24px;padding-bottom:12px}
+  </style>
+</head>
+<body>
+  <nav><a href="index.html">Cerebro Jaiane</a> | <a href="llms.txt">llms.txt</a> | <a href="sitemap.xml">sitemap.xml</a></nav>
+
+<h1>Vault curado - 06-WORKFLOWS/W2-CONTINUACAO-MAPA</h1>
+---
+tags: [workflow, w2, funil-ia-continuacao, master]
+workflow_id: 1778320944779189
+respondio_workspace: 397015
+respondio_channel: 487339
+status: draft
+etapas: 63
+limite_oficial: 100
+gap: ["braip_integration", "handoff_humano", "ramo_tudo_isso_completo"]
+data_mapeamento: 2026-05-09
+---
+<h1>W2 — FUNIL IA CONTINUACAO (mapa master)</h1>
+Status <code>draft</code>. Trigger: <code>Conversa Aberta + Origem=Fluxo de trabalho</code> (só dispara via W1 ponte).
+<h2>Estrutura</h2>
+``<code>
+TRIGGER: Conversa Aberta + filtro Origem=Fluxo de trabalho
+  ↓
+BRANCH ramo_dor (3 saídas):
+  - calor_insonia
+  - humor_secura
+  - tudo_isso (lead com sintomas múltiplos)
+  ↓
+E4 OFERTA (mesmo nos 3 ramos):
+  - Imagem oferta 3 kits: W2-E4-oferta-3-kits.png
+  - Texto "🔥 CONDIÇÃO ESPECIAL — CAMPANHA PROTOCOLO PRO+40 🔥"
+  - Texto detalhado dos 3 protocolos com preços
+  ↓
+E5 ÁUDIO MODALIDADE PAGAMENTO:
+  - Áudio: W2-E5-pedido-modalidade-pix-cod.mp3
+  - Texto explicando 2 formas (antecipado vs entrega)
+  - AskQuestion 3 botões:
+      👑 KIT 12 MESES (12m_premium)
+      ⭐ KIT 8 MESES  (8m_completo)
+      💗 KIT 5 MESES  (5m_inicial)
+  - Tag: protocolo_escolhido
+  - Custom field: protocolo_escolhido = 12m_premium | 8m_completo | 5m_inicial
+  - Custom field: modalidade_pagamento = antecipado | entrega
+  ↓
+E6 PEDIDO DE DADOS:
+  - Áudio: W2-E6-pedido-cep-dados.mp3
+  - Texto "🎉 Parabéns pela decisão... informações pra inserir seu pedido"
+  ↓
+[GAP — em construção]:
+  - Integração Braip (status agendou/tracking/pago/devolvido)
+  - Handoff humano (Raíla/Wilane/Geane/Vitória)
+  - Ramo tudo_isso completo
+</code>`<code>
+<h2>Catálogo de protocolos (canônico 2026-05-09)</h2>
+| Kit | Conteúdo | Preço à vista | 12x cartão |
+|---|---|---|---|
+| 👑 12M Premium  | 6 cápsulas + 4 gotas + 2 géis = 12 potes | R$ 767 | 12x R$ 78,90 |
+| ⭐ 8M Completo  | 4 cápsulas + 3 gotas + 1 gel = 8 potes   | R$ 627 | 12x R$ 64,50 |
+| 💗 5M Inicial   | 3 cápsulas + 2 gotas = 5 potes            | R$ 447 | 12x R$ 45,99 |
+<h2>Tags geradas</h2>
+<ul><li></code>protocolo_escolhido<code> (depois do AskQuestion)</li></ul>
+<h2>Custom fields setados</h2>
+<ul><li></code>protocolo_escolhido<code> = </code>12m_premium<code> | </code>8m_completo<code> | </code>5m_inicial<code></li><li></code>modalidade_pagamento<code> = </code>antecipado<code> | </code>entrega`</li></ul>
+<h2>Assets referenciados</h2>
+| Categoria | Arquivos |
+|---|---|
+| Áudios (2) | W2-E5-pedido-modalidade-pix-cod / W2-E6-pedido-cep-dados |
+| Imagens (1) | W2-E4-oferta-3-kits |
+<h2>GAPs a fechar (próximas ações)</h2>
+<p>1. <strong>Braip webhooks:</strong></p>
+   - status 11 (AGENDOU) → tag AGENDOU + lifecycle AGENDADO + CAPI InitiateCheckout
+   - status 13 (PAGO) → tag PAGOU + lifecycle PAGO + CAPI Purchase
+   - status devolvido → cobradora (Rayane / Maria) + CAPI Frustrado
+   - tracking → custom field codigo_de_rastreio + link_do_rastreio + msg cliente
+<p>2. <strong>Handoff humano:</strong> assign pra vendedora baseada em hot_score / objeção / risco</p>
+<p>3. <strong>Ramo tudo_isso:</strong> copy + áudios específicos (lead com sintomas múltiplos)</p>
+
+</body>
+</html>

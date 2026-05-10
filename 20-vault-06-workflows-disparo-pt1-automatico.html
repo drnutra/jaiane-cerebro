@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault curado - 06-WORKFLOWS/Disparo PT1 Automático - Cerebro Jaiane</title>
+  <meta name="robots" content="index,follow">
+  <style>
+    body{font-family:Arial,sans-serif;max-width:840px;margin:32px auto;padding:0 18px;line-height:1.55;color:#151515;background:#fff}
+    h1{font-size:30px;margin:0 0 18px}
+    h2{font-size:22px;margin-top:28px}
+    h3{font-size:18px;margin-top:22px}
+    a{color:#0b57d0}
+    code{background:#f4f4f4;padding:2px 4px;border-radius:4px}
+    table{border-collapse:collapse;width:100%;margin:16px 0}
+    th,td{border:1px solid #ddd;padding:8px;text-align:left}
+    nav{border-bottom:1px solid #ddd;margin-bottom:24px;padding-bottom:12px}
+  </style>
+</head>
+<body>
+  <nav><a href="index.html">Cerebro Jaiane</a> | <a href="llms.txt">llms.txt</a> | <a href="sitemap.xml">sitemap.xml</a></nav>
+
+<h1>Vault curado - 06-WORKFLOWS/Disparo PT1 Automático</h1>
+---
+tags: [workflow, pt1, automatico]
+---
+<h1>Workflow: Disparo PT1 Automático</h1>
+Regra 1 aplicada.
+<h2>Trigger</h2>
+Lead novo entra no 07-INTEGRACOES/respond.io space 413594, lifecycle PARTE 1, sem histórico, mensagem padrão de abertura.
+<h2>Ação</h2>
+Disparo IMEDIATO sem pedir confirmação ao Diego:
+<p>1. TEXT: "Oi {nome}, tudo bem? Aqui é a Jaiane do Flor da Pele🩷"</p>
+<p>2. AUDIO: 03-ACERVO-AUDIO/01 Boas-Vindas</p>
+<p>3. ASK: "A senhora pode ficar a vontade e me responder em áudio, tá bem?"</p>
+<p>4. Apply tag <code>3923048 FUNIL-PT1</code> + lifecycle <code>773534 PARTE 1</code> (06-WORKFLOWS/Tag + Lifecycle)</p>
+<h2>Exceção (não dispara automático)</h2>
+<ul><li>Re-engager (já entrou antes)</li><li>Objeção atípica</li><li>Lifecycle ≠ PARTE 1</li><li>Notas de pt3/pt4 (vendedora humana já trabalhou)</li></ul>
+
+</body>
+</html>

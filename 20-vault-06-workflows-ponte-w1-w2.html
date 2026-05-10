@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault curado - 06-WORKFLOWS/PONTE-W1-W2 - Cerebro Jaiane</title>
+  <meta name="robots" content="index,follow">
+  <style>
+    body{font-family:Arial,sans-serif;max-width:840px;margin:32px auto;padding:0 18px;line-height:1.55;color:#151515;background:#fff}
+    h1{font-size:30px;margin:0 0 18px}
+    h2{font-size:22px;margin-top:28px}
+    h3{font-size:18px;margin-top:22px}
+    a{color:#0b57d0}
+    code{background:#f4f4f4;padding:2px 4px;border-radius:4px}
+    table{border-collapse:collapse;width:100%;margin:16px 0}
+    th,td{border:1px solid #ddd;padding:8px;text-align:left}
+    nav{border-bottom:1px solid #ddd;margin-bottom:24px;padding-bottom:12px}
+  </style>
+</head>
+<body>
+  <nav><a href="index.html">Cerebro Jaiane</a> | <a href="llms.txt">llms.txt</a> | <a href="sitemap.xml">sitemap.xml</a></nav>
+
+<h1>Vault curado - 06-WORKFLOWS/PONTE-W1-W2</h1>
+---
+tags: [workflow, ponte, integracao, w1-w2]
+data_mapeamento: 2026-05-09
+---
+<h1>Ponte W1 → W2</h1>
+<h2>Como funciona</h2>
+W1 termina no E3 com tag <code>passou_parte2</code> e dispara <code>triggerWorkflow</code> apontando pra W2.
+W2 tem trigger <code>Conversa Aberta + filtro Origem=Fluxo de trabalho</code> — só executa quando vem de outro workflow (W1).
+<h2>Custom field bridge</h2>
+<code>ramo_dor</code> é setado em W1 antes do <code>triggerWorkflow</code>. W2 abre BRANCH baseado nele.
+| Tag W1 | ramo_dor (custom field) | BRANCH W2 |
+|---|---|---|
+| <code>dor_vaso</code> (calor + insônia) | <code>calor_insonia</code> | calor_insonia |
+| <code>dor_humor</code> (nervosa + ansiosa) | <code>humor_secura</code> | humor_secura |
+| <code>dor_intim</code> (secura + sem desejo) | <code>humor_secura</code> ou <code>tudo_isso</code> | humor_secura ou tudo_isso |
+| múltiplas | <code>tudo_isso</code> | tudo_isso |
+<h2>Riscos / brechas</h2>
+<p>1. Se <code>ramo_dor</code> não setar, W2 BRANCH não roteia → lead trava.</p>
+<p>2. Se W1 deletar tag <code>passou_parte2</code> por engano, W2 não dispara mesmo com trigger correto.</p>
+<p>3. Se W1 reativar enquanto está em 104/100, pode quebrar publish.</p>
+<h2>Recomendação</h2>
+Quebrar W1 em 4 sub-workflows:
+<ul><li>W1A — Boas-Vindas + E2 Pergunta de Dor (~25 etapas)</li><li>W1B-VASO (ramo VASO completo) (~25 etapas)</li><li>W1B-HUMOR (ramo HUMOR completo) (~25 etapas)</li><li>W1B-INTIM (ramo INTIM completo) (~25 etapas)</li><li>W1C — E3 Pós-Provas + ponte W2 (~10 etapas)</li></ul>
+Resolve gargalo 104/100 e mantém comportamento idêntico.
+
+</body>
+</html>
