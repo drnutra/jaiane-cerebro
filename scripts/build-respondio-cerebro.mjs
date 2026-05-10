@@ -537,6 +537,290 @@ Fonte publica para rastreamento do respond.io.
 `,
 }
 
+const forbiddenPatterns = [
+  /ElevenLabs/i,
+  /\bTTS\b/i,
+  /voz din[aâ]mica/i,
+  /GPT-5/i,
+  /Obsidian Publish/i,
+  /Kits?\s+MORTOS?/i,
+  /MORTOS?/i,
+  /R\$\s*247/i,
+  /\b2\s*\+\s*1\b/i,
+  /\b1M\b/i,
+  /\b3M\b/i,
+  /\b6M\b/i,
+]
+
+const vaultFiles = [
+  "HOME.md",
+  "A Flor da Pele PRO+40.md",
+  "DR NUTRA.md",
+  "00-IDENTIDADE/5 Regras Core.md",
+  "00-IDENTIDADE/Escopo.md",
+  "00-IDENTIDADE/Jaiane.md",
+  "00-IDENTIDADE/Tom de voz.md",
+  "01-FUNIL/PT1 Boas-Vindas.md",
+  "01-FUNIL/PT2 Personalização.md",
+  "01-FUNIL/PT3 Oferta.md",
+  "01-FUNIL/PT4 Fechamento.md",
+  "01-FUNIL/PEDIU DADOS.md",
+  "01-FUNIL/AGENDADO.md",
+  "01-FUNIL/CANCELADO.md",
+  "02-PRODUTO/V5 Ativo.md",
+  "02-PRODUTO/Kit 5M.md",
+  "02-PRODUTO/Kit 8M.md",
+  "02-PRODUTO/Kit 12M.md",
+  "02-PRODUTO/Cápsulas.md",
+  "02-PRODUTO/Gel Íntimo.md",
+  "02-PRODUTO/RMKT 327.md",
+  "04-OBJECOES/Preço.md",
+  "04-OBJECOES/Vou Pensar.md",
+  "04-OBJECOES/Dúvida Eficácia.md",
+  "04-OBJECOES/Marido Não Sabe.md",
+  "04-OBJECOES/Sem Dinheiro Agora.md",
+  "06-WORKFLOWS/Disparo PT1 Automático.md",
+  "06-WORKFLOWS/Re-engager T+0 a T+24h.md",
+  "06-WORKFLOWS/Transição de Parte.md",
+  "06-WORKFLOWS/Tag + Lifecycle.md",
+  "06-WORKFLOWS/PONTE-W1-W2.md",
+  "06-WORKFLOWS/W1-FUNIL-IA-MAPA.md",
+  "06-WORKFLOWS/W2-CONTINUACAO-MAPA.md",
+  "07-INTEGRACOES/respond.io space 413594.md",
+  "07-INTEGRACOES/MCP respondio.md",
+  "07-INTEGRACOES/n8n.md",
+  "07-INTEGRACOES/Braip.md",
+  "07-INTEGRACOES/Supabase.md",
+  "08-EQUIPE/Vendedoras Humanas.md",
+  "08-EQUIPE/Cobradoras.md",
+  "09-AGENTES-CONECTADOS/Claude (eu).md",
+  "09-AGENTES-CONECTADOS/Codex.md",
+]
+
+function slugify(input) {
+  return input
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\.md$/, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
+function sanitizeKnowledgeText(text) {
+  return text
+    .split("\n")
+    .filter((line) => !forbiddenPatterns.some((pattern) => pattern.test(line)))
+    .map((line) =>
+      line
+        .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, "$2")
+        .replace(/\[\[([^\]]+)\]\]/g, "$1")
+        .replace(/^#+\s*/, (match) => match),
+    )
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+}
+
+function page(title, tags, body) {
+  return `---
+title: ${title}
+publish: true
+tags: [${tags.join(", ")}]
+---
+
+# ${title}
+
+${body.trim()}
+`
+}
+
+function buildIntentMatrix() {
+  const rows = [
+    ["PRECO_DIRETO", "valor, preco, quanto custa", "Responder kits ativos e puxar dor principal", "Nao oferecer desconto"],
+    ["COMPRA_QUENTE", "quero, vou querer, como faco", "Conduzir escolha do kit e coleta progressiva", "Nao confirmar pedido sem sistema"],
+    ["ACEITE_CURTO", "sim, ok, pode ser", "Avancar uma etapa com uma pergunta clara", "Nao pular qualificacao"],
+    ["SAUDE_SENSIVEL", "medicamento, pressao, gravidez, cirurgia, reacao", "Chamar humana", "Nao orientar caso individual"],
+    ["LOGISTICA", "entrega, frete, prazo, pagamento na entrega", "Responder direto e pedir CEP ou kit conforme etapa", "Nao prometer prazo sem sistema"],
+    ["MARIDO_FAMILIA", "vou falar com marido, filha, familia", "Resumir sem pressionar", "Nao diminuir decisao da cliente"],
+    ["CONFIANCA", "golpe, medo, confiavel, empresa", "Dar seguranca operacional e oferecer humano", "Nao inventar prova"],
+    ["TEMPO", "depois, trabalho, agora nao", "Responder curto e deixar reengager cuidar", "Nao insistir longo"],
+    ["OPT_OUT", "parar, remover, nao quero", "Respeitar e encerrar seguro", "Nao insistir"],
+  ]
+
+  return page(
+    "Matriz de intencoes e roteamento",
+    ["intencoes", "roteamento", "antialucinacao"],
+    `| Intencao | Sinais | Acao | Bloqueio |
+|---|---|---|---|
+${rows.map((row) => `| ${row.join(" | ")} |`).join("\n")}
+
+## Regra
+
+Classifique antes de responder. Se duas intencoes baterem, a mais segura vence. Saude sensivel, desconfiança forte e compra quente travada sempre podem ir para humano.`,
+  )
+}
+
+function buildPricePlaybook() {
+  const variants = [
+    "Hoje temos o kit de 5 meses por R$ 467, o de 8 meses por R$ 627 e o de 12 meses por R$ 767. Pra eu te orientar do jeito certo, o que mais esta te incomodando hoje: calor/sono, humor/energia ou intimidade?",
+    "Os valores ativos hoje sao: 5 meses R$ 467, 8 meses R$ 627 e 12 meses R$ 767. Me fala uma coisa: seu maior incomodo esta em calor e sono, humor e energia, intimidade ou tudo junto?",
+    "Temos 3 opcoes ativas: 5 meses por R$ 467, 8 meses por R$ 627 e 12 meses por R$ 767. Pra eu nao te indicar no escuro, o que pesa mais pra voce hoje: calor/sono, humor/energia ou intimidade?",
+  ]
+
+  return page(
+    "Playbook de preco direto",
+    ["preco", "objecao", "respostas"],
+    `## Objetivo
+
+Pergunta de preco e sinal de interesse. Responder sem enrolar e puxar dor principal na mesma mensagem.
+
+## Respostas seguras
+
+${variants.map((item) => `- "${item}"`).join("\n")}
+
+## Depois da resposta
+
+- Se a cliente disser que esta caro, tratar objecao de valor.
+- Se a cliente escolher kit, avancar para coleta progressiva.
+- Se a cliente pedir desconto, chamar humana.
+- Se mencionar caso individual de saude, chamar humana.
+
+## Nao fazer
+
+- Nao esconder valor quando a cliente pediu direto.
+- Nao inventar promocao.
+- Nao usar oferta restrita para lead nova.
+- Nao puxar dor fora do eixo calor/sono, humor/energia, intimidade ou tudo junto.`,
+  )
+}
+
+function buildExamplesPage() {
+  const pains = ["calor e sono", "humor e energia", "intimidade", "tudo junto"]
+  const objections = [
+    ["ta caro", "Eu te entendo. A ideia nao e voce comprar qualquer coisa, e sim escolher o cuidado que faz sentido pro que voce esta sentindo."],
+    ["vou pensar", "Tudo bem. So pra eu te orientar sem te deixar solta: o que pesa mais agora, o valor ou a duvida se faz sentido pra voce?"],
+    ["preciso falar com meu marido", "Eu entendo. Posso te explicar de um jeito simples para voce decidir com calma?"],
+    ["tenho medo de nao funcionar", "E normal ter essa duvida. Eu te explico pelo que voce esta sentindo e, se for algo especifico do seu caso, chamo uma menina do time."],
+    ["sem dinheiro agora", "Entendi. E uma questao de hoje ou voce consegue organizar para receber e pagar na entrega?"],
+  ]
+  const examples = []
+
+  for (const pain of pains) {
+    examples.push(`### Dor: ${pain}\n\nCliente: "Quero saber se ajuda com ${pain}."\n\nResposta: "Entendi. Pra eu te conduzir certinho, isso vem acontecendo mais de dia, a noite ou em momentos especificos?"`)
+  }
+
+  for (const [objection, answer] of objections) {
+    examples.push(`### Objecao: ${objection}\n\nCliente: "${objection}"\n\nResposta: "${answer}"`)
+  }
+
+  for (let i = 1; i <= 520; i += 1) {
+    const pain = pains[i % pains.length]
+    const kit = i % 3 === 0 ? "12 meses" : i % 2 === 0 ? "8 meses" : "5 meses"
+    examples.push(`### Exemplo seguro ${i}\n\nContexto: lead em PT${(i % 4) + 1}, dor principal ${pain}, interesse em ${kit}.\n\nResposta curta: "Perfeito. Pelo que voce me contou sobre ${pain}, faz sentido eu te mostrar o caminho com o kit de ${kit}. Voce quer que eu deixe separado pra seguir com seus dados?"\n\nChecklist: preco ativo, sem promessa, sem diagnostico, sem confirmar pedido, sem inventar sistema.`)
+  }
+
+  return page("Exemplos de conversa segura", ["exemplos", "whatsapp", "respostas"], examples.join("\n\n"))
+}
+
+function buildNegativeCasesPage() {
+  const cases = [
+    ["Pedido sem dados completos", "Nao confirmar pedido. Pedir dado faltante ou chamar humano."],
+    ["Cliente pede orientacao com medicamento", "Nao orientar. Chamar humano."],
+    ["Cliente pede desconto fora da regra", "Nao conceder. Chamar humano."],
+    ["Cliente pergunta se ja pagou", "Nao confirmar. Depende de Braip/workflow."],
+    ["Cliente envia audio confuso", "Pedir resumo em texto ou chamar humano."],
+    ["Cliente pede parar", "Respeitar e encerrar."],
+    ["Cliente cita pressao, cirurgia, hormonio ou gravidez", "Chamar humano."],
+    ["Agente nao sabe tag ou lifecycle", "Nao inventar. Acionar workflow/humano."],
+  ]
+
+  return page(
+    "Casos negativos e bloqueios",
+    ["bloqueios", "antialucinacao", "handoff"],
+    cases.map(([input, action]) => `## ${input}\n\nAcao segura: ${action}`).join("\n\n"),
+  )
+}
+
+function buildOperationalMemoryPage() {
+  return page(
+    "Memoria operacional aprovada",
+    ["memoria", "aprendizado", "codex"],
+    `## Regra
+
+Aprendizado automatico nao entra direto na resposta. Interacoes viram evidencia, correcoes viram fila, e apenas aprendizado aprovado vira memoria operacional.
+
+## Apoio externo
+
+- Codex e Claude Code sao apoio de raciocinio, nao executor de venda.
+- A resposta externa e rascunho ou diagnostico.
+- O agente do respond.io decide usando regras duras, estado do contato e base atual.
+- Se o apoio externo sugerir algo fora do funil, deve ser ignorado.
+
+## Criterios de aprovacao
+
+- Mantem precos ativos.
+- Nao inventa promessa.
+- Nao diagnostica.
+- Nao confirma pedido ou pagamento.
+- Nao cria audio.
+- Nao troca tag/lifecycle sem acao correta.`,
+  )
+}
+
+function buildExpandedLlmsPage() {
+  const pageNames = Object.keys(pages).filter((name) => name !== "llms.md")
+  return `---
+title: LLM index
+publish: true
+permalink: /llms
+tags: [llms, indice]
+---
+
+# LLM index
+
+Fonte publica para rastreamento do respond.io.
+
+${pageNames.map((name) => `- [[${name.replace(/\.md$/, "")}]]`).join("\n")}
+`
+}
+
+const vaultRoot = "/Users/diegoribeiro/cerebro-jaiane"
+
+for (const rel of vaultFiles) {
+  const absolute = path.join(vaultRoot, rel)
+  try {
+    const raw = await fs.readFile(absolute, "utf8")
+    const clean = sanitizeKnowledgeText(raw)
+    if (!clean) continue
+    pages[`20-vault-${slugify(rel)}.md`] = page(`Vault curado - ${rel.replace(/\.md$/, "")}`, ["vault", "curado"], clean)
+  } catch {
+    // arquivo opcional no vault local
+  }
+}
+
+pages["10-matriz-intencoes.md"] = buildIntentMatrix()
+pages["11-playbook-preco-direto.md"] = buildPricePlaybook()
+pages["12-exemplos-conversa-segura.md"] = buildExamplesPage()
+pages["13-casos-negativos-bloqueios.md"] = buildNegativeCasesPage()
+pages["14-memoria-operacional-aprovada.md"] = buildOperationalMemoryPage()
+
+pages["index.md"] = pages["index.md"].replace(
+  "10. [[09-checklist-antialucinacao]]",
+  `10. [[09-checklist-antialucinacao]]
+11. [[10-matriz-intencoes]]
+12. [[11-playbook-preco-direto]]
+13. [[12-exemplos-conversa-segura]]
+14. [[13-casos-negativos-bloqueios]]
+15. [[14-memoria-operacional-aprovada]]
+
+## Camada turbo
+
+Esta base inclui material curado do vault Obsidian, playbooks, exemplos seguros e bloqueios operacionais. O objetivo e aumentar cobertura sem contaminar o agente com regra antiga ou fonte insegura.`,
+)
+
+pages["llms.md"] = buildExpandedLlmsPage()
+
 const htmlPages = Object.fromEntries(
   Object.entries(pages).map(([name, markdown]) => {
     const slug = name === "index.md" ? "index" : name.replace(/\.md$/, "")

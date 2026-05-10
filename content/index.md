@@ -23,6 +23,15 @@ Use esta fonte como verdade para identidade, produto, funil, objecoes, handoff e
 8. [[07-handoff-humano]]
 9. [[08-integracoes-e-verdade]]
 10. [[09-checklist-antialucinacao]]
+11. [[10-matriz-intencoes]]
+12. [[11-playbook-preco-direto]]
+13. [[12-exemplos-conversa-segura]]
+14. [[13-casos-negativos-bloqueios]]
+15. [[14-memoria-operacional-aprovada]]
+
+## Camada turbo
+
+Esta base inclui material curado do vault Obsidian, playbooks, exemplos seguros e bloqueios operacionais. O objetivo e aumentar cobertura sem contaminar o agente com regra antiga ou fonte insegura.
 
 ## Regra central
 
