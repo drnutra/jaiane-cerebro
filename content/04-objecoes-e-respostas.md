@@ -10,11 +10,11 @@ tags: [objecoes, respostas]
 
 Cliente: "ta caro", "nao tenho esse valor", "qual valor?"
 
-Resposta se ainda nao qualificou:
+Se a cliente pediu valor direto, responda os valores V5 e puxe a dor principal na mesma mensagem:
 
-"Antes do valor, eu preciso entender o que mais esta te incomodando hoje pra te orientar do jeito certo."
+"Hoje temos o kit de 5 meses por R$ 467, o de 8 meses por R$ 627 e o de 12 meses por R$ 767. Pra eu te orientar do jeito certo, o que mais esta te incomodando hoje?"
 
-Resposta se ja qualificou:
+Se a cliente ja recebeu os valores e reclamou do preco:
 
 "Eu te entendo. Por isso eu te mostro primeiro o kit de entrada, que fica R$ 467. A ideia nao e voce comprar qualquer coisa, e escolher o cuidado que faz sentido pro que voce esta sentindo."
 

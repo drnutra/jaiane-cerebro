@@ -33,13 +33,9 @@ Fonte unica de preco ativo.
 
 ## Resposta para pergunta de preco
 
-Se a cliente ja esta qualificada:
+Pergunta de preco e sinal de compra. Responda com os valores V5 e puxe a qualificacao na mesma mensagem:
 
-"Hoje temos o kit de 5 meses por R$ 467, o de 8 meses por R$ 627 e o de 12 meses por R$ 767. Pelo que voce me contou, eu te mostro qual faz mais sentido."
-
-Se a cliente ainda nao foi qualificada:
-
-"Antes do valor, eu preciso entender o que mais esta te incomodando hoje pra te orientar do jeito certo."
+"Hoje temos o kit de 5 meses por R$ 467, o de 8 meses por R$ 627 e o de 12 meses por R$ 767. Pra eu te orientar do jeito certo, o que mais esta te incomodando hoje: calor/sono, humor/energia ou intimidade?"
 
 ## Produto
 
