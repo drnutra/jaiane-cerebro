@@ -146,13 +146,9 @@ Fonte unica de preco ativo.
 
 ## Resposta para pergunta de preco
 
-Se a cliente ja esta qualificada:
+Pergunta de preco e sinal de compra. Responda com os valores V5 e puxe a qualificacao na mesma mensagem:
 
-"Hoje temos o kit de 5 meses por R$ 467, o de 8 meses por R$ 627 e o de 12 meses por R$ 767. Pelo que voce me contou, eu te mostro qual faz mais sentido."
-
-Se a cliente ainda nao foi qualificada:
-
-"Antes do valor, eu preciso entender o que mais esta te incomodando hoje pra te orientar do jeito certo."
+"Hoje temos o kit de 5 meses por R$ 467, o de 8 meses por R$ 627 e o de 12 meses por R$ 767. Pra eu te orientar do jeito certo, o que mais esta te incomodando hoje: calor/sono, humor/energia ou intimidade?"
 
 ## Produto
 
@@ -238,11 +234,11 @@ Pedido agendado e objetivo do funil, mas a IA nao confirma sozinha. Confirmacao 
 
 Cliente: "ta caro", "nao tenho esse valor", "qual valor?"
 
-Resposta se ainda nao qualificou:
+Se a cliente pediu valor direto, responda os valores V5 e puxe a dor principal na mesma mensagem:
 
-"Antes do valor, eu preciso entender o que mais esta te incomodando hoje pra te orientar do jeito certo."
+"Hoje temos o kit de 5 meses por R$ 467, o de 8 meses por R$ 627 e o de 12 meses por R$ 767. Pra eu te orientar do jeito certo, o que mais esta te incomodando hoje?"
 
-Resposta se ja qualificou:
+Se a cliente ja recebeu os valores e reclamou do preco:
 
 "Eu te entendo. Por isso eu te mostro primeiro o kit de entrada, que fica R$ 467. A ideia nao e voce comprar qualquer coisa, e escolher o cuidado que faz sentido pro que voce esta sentindo."
 
