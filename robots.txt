@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://drnutra.github.io/jaiane-cerebro/sitemap.xml
